@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Para Ti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --noche: #8b8680;
+    --noche-2: #6d6b67;
+    --vino: #9b9590;
+    --rosa: #a99e98;
+    --crema: #e8e5e0;
+    --lila: #b4aca5;
+    --linea: rgba(232,229,224,0.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{
+    background:var(--noche);
+    color:var(--crema);
+    font-family:'Jost',sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    scroll-behavior:smooth;
+  }
+  body{
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(244,236,226,0.35) 0, transparent 100%),
+      radial-gradient(1px 1px at 70% 15%, rgba(244,236,226,0.25) 0, transparent 100%),
+      radial-gradient(1px 1px at 40% 70%, rgba(244,236,226,0.3) 0, transparent 100%),
+      radial-gradient(1px 1px at 85% 60%, rgba(244,236,226,0.2) 0, transparent 100%),
+      radial-gradient(1px 1px at 10% 85%, rgba(244,236,226,0.3) 0, transparent 100%),
+      linear-gradient(180deg, var(--noche) 0%, var(--noche-2) 100%);
+    background-attachment:fixed;
+  }
+  h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:600;}
+  .max{max-width:480px;margin:0 auto;padding:0 28px;}
+
+  /* ---- ENTRADA ---- */
+  #entrada{
+    height:100vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+    position:relative;
+    cursor:pointer;
+  }
+  #entrada .eyebrow{
+    font-size:13px;letter-spacing:2px;color:var(--lila);margin-bottom:14px;
+  }
+  #entrada h1{
+    font-size:44px;color:var(--rosa);line-height:1.15;
+  }
+  #entrada .instr{
+    margin-top:34px;font-size:14px;color:var(--crema);opacity:0.55;
+  }
+  .corazon-tap{
+    display:inline-block;
+    font-size:28px;line-height:1;
+    position:relative;margin-top:26px;
+    animation:latido 1.6s ease-in-out infinite;
+  }
+  @keyframes latido{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.18);}
+  }
+  #entrada.abierto{ animation: desvanecer 0.9s ease forwards; pointer-events:none; }
+  @keyframes desvanecer{ to{opacity:0; transform:scale(0.97);} }
+
+  main{display:none;}
+  main.visible{display:block; animation: aparecer 0.8s ease;}
+  @keyframes aparecer{ from{opacity:0;} to{opacity:1;} }
+
+  section{padding:70px 0 20px;}
+  .kicker{
+    font-size:12px;letter-spacing:1.5px;color:var(--lila);opacity:0.8;margin-bottom:10px;
+  }
+  .titulo-seccion{font-size:30px;color:var(--rosa);margin-bottom:6px;}
+  .sub{font-size:14px;color:var(--crema);opacity:0.6;margin-bottom:10px;line-height:1.5;display:flex;align-items:center;justify-content:center;gap:10px;}
+  .sub .flecha{display:inline-block;width:18px;height:18px;fill:currentColor;transform-origin:center;animation:bajar 1s ease-in-out infinite;opacity:0.9}
+  @keyframes bajar{0%{transform:translateY(0);}50%{transform:translateY(6px);}100%{transform:translateY(0);}}
+
+  /* ---- CONTADOR ---- */
+  #contador{text-align:center;}
+  .contador-caja{
+    display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:10px;
+  }
+  .contador-num{
+    font-family:'Cormorant Garamond',serif;font-size:38px;color:var(--crema);
+    display:inline-block;transform-origin:center bottom;will-change:transform,opacity;
+  }
+  .contador-num.animando{
+    animation: contadorSubir 0.55s ease;
+  }
+  @keyframes contadorSubir{
+    0%{opacity:0.25;transform:translateY(14px) scale(0.96);} 
+    55%{opacity:1;transform:translateY(-2px) scale(1.02);} 
+    100%{opacity:1;transform:translateY(0) scale(1);} 
+  }
+  .contador-lbl{font-size:11px;letter-spacing:1px;color:var(--lila);margin-top:4px;}
+
+  /* ---- GALERIA ---- */
+  .galeria{
+    display:flex;overflow-x:auto;gap:14px;padding:6px 0 18px;
+    scroll-snap-type:x mandatory;
+    -ms-overflow-style:none;scrollbar-width:none;
+  }
+  .galeria::-webkit-scrollbar{display:none;}
+  .foto{
+    flex:0 0 78%;scroll-snap-align:center;
+    border-radius:2px;overflow:hidden;
+    position:relative;
+    border:1px solid var(--linea);
+  }
+  .foto img{width:100%;height:340px;object-fit:cover;display:block;filter:saturate(0.9);}
+  .foto .cap{
+    position:absolute;bottom:0;left:0;right:0;
+    padding:16px 14px 12px;
+    background:linear-gradient(0deg, rgba(28,23,48,0.92), transparent);
+    font-size:13px;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--crema);
+  }
+
+  /* ---- TIMELINE ---- */
+  .linea-tiempo{position:relative;padding-left:26px;}
+  .linea-tiempo::before{
+    content:'';position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--linea);
+  }
+  .evento{position:relative;padding-bottom:38px;}
+  .evento:last-child{padding-bottom:0;}
+  .evento::before{
+    content:'';position:absolute;left:-26px;top:5px;width:9px;height:9px;border-radius:50%;
+    background:var(--vino);border:2px solid var(--noche);
+  }
+  .evento .fecha{font-size:12px;letter-spacing:1px;color:var(--lila);margin-bottom:6px;}
+  .evento h3{font-size:24px;color:var(--crema);margin-bottom:6px;}
+  .evento p{font-size:16px;line-height:1.6;color:var(--crema);opacity:0.72;}
+  .evento-img{margin:12px 0;border-radius:6px;overflow:hidden;border:1px solid var(--linea);max-width:86%;margin-left:auto;margin-right:auto;}
+  .evento-img img{width:100%;height:auto;display:block;object-fit:cover;}
+
+  /* Reducir espacio entre galería y la sección 'historia' */
+  #historia{padding-top:30px;}
+
+  /* ---- CARTA ---- */
+  #carta{
+    background:var(--noche-2);
+    margin:0 0;
+    border-top:1px solid var(--linea);
+    border-bottom:1px solid var(--linea);
+  }
+  .carta-texto{
+    font-family:'Cormorant Garamond',serif;font-size:19px;line-height:1.75;color:var(--crema);
+  }
+  .carta-texto p{margin-bottom:16px;}
+  .carta-texto .mensaje-final{
+    margin:28px 0 12px;text-align:center;font-family:'Jost',sans-serif;
+    font-size:clamp(1.7rem,2.3vw,2.5rem);font-weight:700;letter-spacing:0.08em;
+    color:var(--rosa);text-shadow:0 0 18px rgba(232,165,152,0.35);
+  }
+  .firma{margin-top:20px;font-style:italic;color:var(--rosa);font-size:20px;}
+
+  /* ---- SORPRESA ---- */
+  #sorpresa{text-align:center;}
+  .btn-sorpresa{
+    background:none;border:1px solid var(--vino);color:var(--rosa);
+    font-family:'Jost',sans-serif;font-size:13px;letter-spacing:1px;
+    padding:14px 26px;border-radius:2px;cursor:pointer;
+    opacity:1;transform:translateY(0);transition:opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
+  }
+  .btn-sorpresa.oculta{
+    opacity:0;transform:translateY(-10px) scale(0.96);
+    pointer-events:none;filter:blur(2px);
+    display:none;
+  }
+  .revelacion{
+    margin-top:0;font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--crema);
+    display:none;line-height:1.5;opacity:0;transform:translateY(10px) scale(0.98);
+    transition:opacity 0.45s ease, transform 0.45s ease;
+  }
+  .revelacion.visible{display:block;opacity:1;transform:translateY(0) scale(1);animation:aparecer 0.7s ease;}
+
+  #zona-botones,
+  #mensaje-burla{
+    display:none;
+  }
+
+  #zona-botones.visible,
+  #mensaje-burla.visible{
+    display:flex;animation:aparecer 0.4s ease;
+  }
+
+  .zona-botones{
+    position:relative;height:240px;width:100%;margin-top:20px;
+  }
+  .btn-si,
+  .btn-no,
+  .btn-tal-vez{
+    position:absolute;min-width:110px;padding:14px 28px;border-radius:999px;
+    border:1px solid var(--linea);font-family:'Jost',sans-serif;font-size:15px;
+    letter-spacing:0.5px;cursor:pointer;touch-action:manipulation;
+    box-shadow:0 8px 18px rgba(0,0,0,0.12);
+  }
+  .btn-si{
+    left:50%;top:12px;transform:translateX(-50%);
+    background:linear-gradient(180deg, var(--vino), var(--noche));
+    color:var(--crema);border-color:rgba(244,236,226,0.2);
+  }
+  .btn-tal-vez{
+    left:50%;top:82px;transform:translateX(-50%);
+    background:rgba(232,165,152,0.18);color:var(--crema);
+    border-color:var(--vino);
+    box-shadow:0 8px 18px rgba(196, 98, 104, 0.14);
+  }
+  .btn-no{
+    left:50%;top:152px;transform:translateX(-50%);
+    background:rgba(255,255,255,0.03);color:var(--crema);border-color:var(--linea);
+    transition:left 0.25s ease, top 0.25s ease;
+  }
+  #btn-no.desvanecer{
+    opacity:0;transform:scale(0.88);pointer-events:none;
+    transition:opacity 0.6s ease, transform 0.6s ease;
+  }
+  #mensaje-burla{
+    margin-top:16px;text-align:center;font-size:15px;color:var(--crema);
+    letter-spacing:0.5px;opacity:0.95;min-height:22px;
+    background:rgba(244,236,226,0.04);border:1px solid var(--linea);
+    border-radius:6px;padding:10px 14px;line-height:1.5;
+    display:none;align-items:center;justify-content:center;
+  }
+  #mensaje-si{
+    display:none;margin-top:18px;padding:18px 16px;border:1px solid var(--linea);
+    border-radius:6px;background:rgba(22, 10, 12, 0.18);text-align:center;
+    font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--crema);
+    line-height:1.4;opacity:0;transform:translateY(8px);
+    transition:opacity 0.45s ease, transform 0.45s ease;
+  }
+  #mensaje-si.visible{display:block;opacity:1;transform:translateY(0);animation:aparecer 0.6s ease;}
+  #mensaje-si svg{width:18px;height:18px;vertical-align:middle;fill:var(--vino);margin-right:6px;}
+
+  /* ---- MUSICA FLOTANTE ---- */
+  #musica-toggle{
+    position:fixed;bottom:20px;right:20px;
+    width:46px;height:46px;border-radius:50%;
+    background:var(--noche-2);border:1px solid var(--linea);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;z-index:50;
+    box-shadow:0 4px 14px rgba(0,0,0,0.3);
+  }
+  #musica-toggle svg{width:18px;height:18px;fill:var(--rosa);}
+
+  footer{
+    text-align:center;padding:50px 0 40px;
+    font-size:12px;color:var(--crema);opacity:0.4;letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+
+  <div id="entrada" onclick="abrir()">
+    <div class="eyebrow">UN RECUERDITO CON AMOR PARA</div>
+    <h1>José Miguel</h1>
+    <div class="eyebrow">(Para cuando falte la memoria queden las fotografías)</div>
+    <div class="instr">toca para abrir</div>
+    <div class="corazon-tap">🤍🐣👩🏾‍❤️‍💋‍👨🏻🤎</div>
+  </div>
+
+  <main id="contenido">
+
+    <section id="contador">
+      <div class="max">
+        <div class="kicker">DESDE EL 22-3-2026</div>
+        <div class="titulo-seccion">Llevamos juntos</div>
+        <div class="contador-caja">
+          <div><div class="contador-num" id="dias">000</div><div class="contador-lbl">DÍAS</div></div>
+          <div><div class="contador-num" id="horas">00</div><div class="contador-lbl">HORAS</div></div>
+          <div><div class="contador-num" id="mins">00</div><div class="contador-lbl">MIN</div></div>
+          <div><div class="contador-num" id="segs">00</div><div class="contador-lbl">SEG</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="galeria-sec">
+      <div class="max">
+        <div class="kicker">NOSOTROS</div>
+        <div class="titulo-seccion">Algunos momentos</div>
+      </div>
+      <div class="galeria">
+        <div class="foto"><img src="fotos/photo_2_2026-11-11_10-08-21.jpg" alt="foto_2"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_1_2026-11-11_10-08-21.jpg" alt="foto_1"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_3_2026-11-11_10-08-21.jpg" alt="foto_3"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_4_2026-11-11_10-08-21.jpg" alt="foto_4"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_5_2026-11-11_10-08-21.jpg" alt="foto_5"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_6_2026-11-11_10-08-21.jpg" alt="foto_6"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_7_2026-11-11_10-08-21.jpg" alt="foto_7"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_8_2026-11-11_10-08-21.jpg" alt="foto_8"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_9_2026-11-11_10-08-21.jpg" alt="foto_9"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_10_2026-11-11_10-08-21.jpg" alt="foto_10"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_11_2026-11-11_10-08-21.jpg" alt="foto_11"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_12_2026-11-11_10-08-21.jpg" alt="foto_12"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_13_2026-11-11_10-08-21.jpg" alt="foto_13"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_14_2026-11-11_10-08-21.jpg" alt="foto_14"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_15_2026-11-11_10-08-21.jpg" alt="foto_15"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_16_2026-11-11_10-08-21.jpg" alt="foto_16"><div class="cap"></div></div>
+        <div class="foto"><img src="fotos/photo_17_2026-11-11_10-08-21.jpg" alt="foto_17"><div class="cap"></div></div>
+      </div>
+        <div class="sub">Desliza para ver más
+          <span class="flecha" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg" focusable="false">
+              <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+        </div>
+    </section>
+
+    <section id="historia">
+      <div class="max">
+        <div class="kicker">NUESTRA HISTORIA</div>
+        <div class="titulo-seccion">Cómo empezó todo</div>
+        <div class="linea-tiempo">
+          <div class="evento">
+            <div class="fecha">3-9-2025</div>
+            <h3>El primer día</h3>
+            <p>Esta fue nuestra primera conversación por whatshapp para planear nuestra primera cita...</p>
+            <div class="evento-img"><img src="fotos/photo_2_2026-09-12_16-29-28.jpg" alt="Primera conversación por WhatsApp"></div>
+          </div>
+          <div class="evento">
+            <div class="fecha">4-10-2025</div>
+            <h3>Momentos especiales</h3>
+            <p>la primera foto q publicamos juntos.</p>
+            <div class="evento-img"><img src="fotos/photo_3_2026-09-12_19-54-50.jpg" alt="La primera foto que publicamos juntos"></div>
+          </div>
+          <div class="evento">
+            <div class="fecha">6-11-2025</div>
+            <h3>El día que me pediste ser tu novia <3</h3>
+            <div class="evento-img"><img src="fotos/photo_1_2026-09-12_19-54-50.jpg" alt="Momento especial"></div>
+          </div>
+          <div class="evento">
+            <div class="fecha">HOY</div>
+            <h3>Y a pesar de todo seguimos aquí</h3>
+            <div class="evento-img"><img src="fotos/photo_2_2026-09-12_19-54-50.jpg" alt="Hoy"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="carta">
+      <div class="max">
+        <div class="kicker">PARA TI</div>
+        <div class="titulo-seccion">Una carta</div>
+        <div class="carta-texto">
+          <p>Feliz aniversario gordito de mi vida 8 meses y han sido los mejores y sin duda no cambiaria nada , miro hacia adelante y no me imagino sin tí , gracias por cada detalle por tu cariño por tu paciencia pero sobre todo por tu amor incondicional , parece poco tiempo pero solo tu y yo sabemos lo que significan 8 meses para nosotros . Te amo demasiado 🤍🐣👩🏾‍❤️‍💋‍👨🏻🤎</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="sorpresa">
+      <div class="max">
+        <div class="kicker">ANTES DE IRTE</div>
+        <div class="titulo-seccion">No toques este botón</div>
+        <button class="btn-sorpresa" onclick="revelar()">tócalo de todas formas</button>
+        <div class="revelacion" id="revelacion-texto">
+          Ojalá me dieras la oportunidad de ser tu novia nuevamente <br>
+          <strong>🤍🐣👩🏾‍❤️‍💋‍👨🏻🤎</strong>
+        </div>
+
+        <div id="zona-botones" class="zona-botones">
+          <button class="btn-si" type="button" onclick="responderSi()">Sí</button>
+          <button class="btn-tal-vez" type="button" onclick="mostrarMensajeTalVez()">Tal vez</button>
+          <button id="btn-no" class="btn-no" type="button">No</button>
+        </div>
+        <p id="mensaje-burla">¡ni lo intentes! 🏃💨</p>
+        <div id="mensaje-si" aria-live="polite">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.45-10.5-9.03C.65 9.7 2.04 5 6.47 5c2.2 0 3.42 1.18 4.12 2.16C11.3 6.18 12.52 5 14.73 5c4.43 0 5.82 4.7 4.97 6.97C19.5 16.55 12 21 12 21Z"/></svg>
+          Me lo imaginé pero tenía mis dudas 🙂
+        </div>
+      </div>
+    </section>
+
+    <footer>hecho con cariño, para ti <3</footer>
+
+  </main>
+
+  <!-- Ruta web-safe con barras inclinadas y caracteres codificados para que el navegador cargue el MP3 sin problemas en Windows. -->
+  <audio id="cancion-fondo" loop preload="auto" type="audio/mpeg" src="audio/Desde%20Que%20Te%20Tengo%20-%20Car%C3%ADn%20Le%C3%B3n%20(320).mp3" hidden></audio>
+
+  <div id="musica-toggle" onclick="toggleMusica()" title="Música">
+    <svg id="icono-musica" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+  </div>
+
+  <script>
+    function intentarReproducirMusica(){
+      if (!audioFondo) return false;
+
+      audioFondo.muted = false;
+      audioFondo.volume = 0.5;
+
+      try {
+        const intento = audioFondo.play();
+        if (intento && typeof intento.then === 'function') {
+          intento
+            .then(() => {
+              sonando = true;
+              actualizarIconoMusica();
+              return true;
+            })
+            .catch(() => {
+              sonando = false;
+              actualizarIconoMusica();
+              return false;
+            });
+          return true;
+        }
+
+        sonando = true;
+        actualizarIconoMusica();
+        return true;
+      } catch (error) {
+        console.warn('La reproducción automática no pudo iniciarse:', error);
+        sonando = false;
+        actualizarIconoMusica();
+        return false;
+      }
+    }
+
+    function abrir(){
+      document.getElementById('entrada').classList.add('abierto');
+      intentarReproducirMusica();
+
+      setTimeout(()=>{
+        document.getElementById('entrada').style.display='none';
+        document.getElementById('contenido').classList.add('visible');
+      }, 850);
+    }
+
+    function revelar(){
+      const btnSorpresa = document.querySelector('.btn-sorpresa');
+      const titulo = document.querySelector('#sorpresa .titulo-seccion');
+      const revelacion = document.getElementById('revelacion-texto');
+      const zona = document.getElementById('zona-botones');
+
+      if (titulo) titulo.style.display = 'none';
+      if (btnSorpresa) btnSorpresa.classList.add('oculta');
+      if (revelacion) revelacion.classList.add('visible');
+      if (zona) zona.classList.add('visible');
+    }
+
+    const frasesBurla = [
+      '¡ni lo intentes! 🏃💨',
+      'no tan rápido...',
+      'ese botón no existe para ti 😌',
+      'inténtalo de nuevo 💙',
+      'te lo dije: ese botón no es tuyo 😏',
+      'asere ya, ponte pa esto -_-',
+      'mejor deja el botón y acepta la verdad 💞',
+      'no huyas de lo bonito, vuelve aquí 💖',
+      'el botón se está cansando de correr 😅',
+      'te veo muy decidido, pero yo más 😌',
+      'si tú no te rindes yo tampoco 😘',
+      'no intentes escapar del destino 💘',
+      'vuelve a intentarlo, yo tengo paciencia',
+      'te estás esforzando mucho por no aceptar, y me voy a empingar',
+      'pareces un poco obsesivo con ese botón',
+      'no toques más el botón y tócame a mi',
+      'tanto lío para al final decir que sí ❤️',
+      'al final te estás riendo y es lo que cuenta',
+      'el botón huye pero mi amor te alcanza 😊',
+      'vámonos de una vez por la respuesta correcta 💞',
+      'acaba de aceptarlo, que horita la que no quiere soy yo',
+      'me estás cayendo mal',
+      'no me voy a ir sin un sí ✨',
+      'última oportunidad...'
+    ];
+
+    const frasesTalVez = [
+      'me conformo con esa respuesta 😔'
+    ];
+
+    let indiceBurla = 0;
+    let esUltimaOportunidad = false;
+    let yaSeRindio = false;
+
+    function cambiarMensajeBurla(){
+      const mensaje = document.getElementById('mensaje-burla');
+      if (!mensaje) return;
+
+      const frase = frasesBurla[indiceBurla % frasesBurla.length];
+      esUltimaOportunidad = (frase === 'última oportunidad...');
+      indiceBurla += 1;
+      mensaje.textContent = frase;
+      mensaje.classList.add('visible');
+    }
+
+    function mostrarMensajeTalVez(){
+      const mensaje = document.getElementById('mensaje-burla');
+      if (!mensaje) return;
+
+      const frase = frasesTalVez[0];
+      mensaje.textContent = frase;
+      mensaje.classList.add('visible');
+    }
+
+    function moverBotonNo(mostrarMensaje = false){
+      const zona = document.getElementById('zona-botones');
+      const btnNo = document.getElementById('btn-no');
+      const btnSi = document.querySelector('.btn-si');
+      const btnTalVez = document.querySelector('.btn-tal-vez');
+      if (!zona || !btnNo || !btnSi) return;
+
+      const zonaRect = zona.getBoundingClientRect();
+      const btnRect = btnNo.getBoundingClientRect();
+      const btnSiRect = btnSi.getBoundingClientRect();
+      const btnSiLocal = {
+        left: btnSiRect.left - zonaRect.left + 16,
+        top: btnSiRect.top - zonaRect.top + 16,
+        right: btnSiRect.right - zonaRect.left - 16,
+        bottom: btnSiRect.bottom - zonaRect.top - 16,
+        width: btnSiRect.width - 32,
+        height: btnSiRect.height - 32
+      };
+
+      const btnTalVezLocal = btnTalVez ? {
+        left: btnTalVez.getBoundingClientRect().left - zonaRect.left + 16,
+        top: btnTalVez.getBoundingClientRect().top - zonaRect.top + 16,
+        right: btnTalVez.getBoundingClientRect().right - zonaRect.left - 16,
+        bottom: btnTalVez.getBoundingClientRect().bottom - zonaRect.top - 16,
+        width: btnTalVez.getBoundingClientRect().width - 32,
+        height: btnTalVez.getBoundingClientRect().height - 32
+      } : null;
+
+      const rectosBloqueantes = [btnSiLocal];
+      if (btnTalVezLocal) rectosBloqueantes.push(btnTalVezLocal);
+
+      const maxLeft = Math.max(zonaRect.width - btnRect.width, 0);
+      const maxTop = Math.max(zonaRect.height - btnRect.height, 0);
+
+      let left = 0;
+      let top = 0;
+      let encontrado = false;
+
+      for (let intento = 0; intento < 20; intento++) {
+        left = Math.random() * maxLeft;
+        top = Math.random() * maxTop;
+
+        const rectNo = {
+          left: left,
+          top: top,
+          right: left + btnRect.width,
+          bottom: top + btnRect.height
+        };
+
+        const haySolapamiento = rectosBloqueantes.some((rectBloqueante) => !(rectNo.right < rectBloqueante.left || rectNo.left > rectBloqueante.right || rectNo.bottom < rectBloqueante.top || rectNo.top > rectBloqueante.bottom));
+
+        if (!haySolapamiento) {
+          encontrado = true;
+          break;
+        }
+      }
+
+      if (!encontrado) {
+        left = 18;
+        top = zonaRect.height - btnRect.height - 18;
+
+        if (btnTalVezLocal) {
+          const rectNoRespaldo = {
+            left: left,
+            top: top,
+            right: left + btnRect.width,
+            bottom: top + btnRect.height
+          };
+
+          const haySolapamientoRespaldo = !(rectNoRespaldo.right < btnTalVezLocal.left || rectNoRespaldo.left > btnTalVezLocal.right || rectNoRespaldo.bottom < btnTalVezLocal.top || rectNoRespaldo.top > btnTalVezLocal.bottom);
+
+          if (haySolapamientoRespaldo) {
+            left = Math.max(zonaRect.width - btnRect.width - 18, 18);
+            top = 18;
+          }
+        }
+      }
+
+      btnNo.style.left = left + 'px';
+      btnNo.style.top = top + 'px';
+      btnNo.style.transform = 'none';
+
+      if (mostrarMensaje) {
+        cambiarMensajeBurla();
+      }
+    }
+
+    function rendirseBotonNo(){
+      if (yaSeRindio) return;
+      yaSeRindio = true;
+      esUltimaOportunidad = false;
+
+      const btnNo = document.getElementById('btn-no');
+      const mensaje = document.getElementById('mensaje-burla');
+      if (!btnNo || !mensaje) return;
+
+      mensaje.textContent = 'te avisé 😌';
+      mensaje.classList.add('visible');
+      btnNo.classList.add('desvanecer');
+
+      setTimeout(() => {
+        btnNo.style.display = 'none';
+        btnNo.disabled = true;
+        btnNo.setAttribute('aria-hidden', 'true');
+
+        mensaje.textContent = 'te avisé 😌';
+        mensaje.classList.add('visible');
+      }, 600);
+    }
+
+    function responderSi(){
+      const zona = document.getElementById('zona-botones');
+      const burla = document.getElementById('mensaje-burla');
+      const mensaje = document.getElementById('mensaje-si');
+      const pregunta = document.getElementById('revelacion-texto');
+
+      if (pregunta) pregunta.classList.remove('visible');
+      if (zona) zona.classList.remove('visible');
+      if (burla) burla.classList.remove('visible');
+      if (mensaje) mensaje.classList.add('visible');
+    }
+
+    const btnNo = document.getElementById('btn-no');
+    if (btnNo) {
+      btnNo.addEventListener('click', function(evento){
+        const zona = document.getElementById('zona-botones');
+        if (!zona || !zona.classList.contains('visible')) return;
+        if (esUltimaOportunidad) {
+          evento.preventDefault();
+          rendirseBotonNo();
+          return;
+        }
+
+        evento.preventDefault();
+        moverBotonNo(true);
+      });
+
+      btnNo.addEventListener('touchstart', function(evento){
+        const zona = document.getElementById('zona-botones');
+        if (!zona || !zona.classList.contains('visible')) return;
+        if (esUltimaOportunidad) {
+          evento.preventDefault();
+          rendirseBotonNo();
+          return;
+        }
+
+        evento.preventDefault();
+        moverBotonNo(true);
+      }, { passive: false });
+    }
+
+    document.addEventListener('touchmove', function(evento){
+      const zona = document.getElementById('zona-botones');
+      if (!zona || !zona.classList.contains('visible')) return;
+      if (!btnNo) return;
+      if (esUltimaOportunidad) {
+        rendirseBotonNo();
+        return;
+      }
+
+      const toque = evento.touches && evento.touches[0];
+      if (!toque) return;
+
+      const rect = btnNo.getBoundingClientRect();
+      const centroX = rect.left + (rect.width / 2);
+      const centroY = rect.top + (rect.height / 2);
+      const distancia = Math.hypot(toque.clientX - centroX, toque.clientY - centroY);
+
+      if (distancia < 90) {
+        moverBotonNo(false);
+      }
+    }, { passive: true });
+
+    const audioFondo = document.getElementById('cancion-fondo');
+    let sonando = false;
+
+    document.addEventListener('touchstart', function(){
+      if (!sonando) intentarReproducirMusica();
+    }, { passive: true, once: true });
+
+    document.addEventListener('pointerdown', function(){
+      if (!sonando) intentarReproducirMusica();
+    }, { passive: true, once: true });
+
+    function actualizarIconoMusica(){
+      const icono = document.getElementById('icono-musica');
+      if (!icono) return;
+
+      if (sonando) {
+        icono.innerHTML = '<path d="M8 5h3v14H8zm5 0h3v14h-3z" fill="currentColor"/>';
+      } else {
+        icono.innerHTML = '<path d="M8 5v14l11-7z" fill="currentColor"/>';
+      }
+    }
+
+    if (audioFondo) {
+      audioFondo.addEventListener('error', () => {
+        console.warn('No se pudo cargar la canción de fondo.');
+        sonando = false;
+        actualizarIconoMusica();
+      });
+
+      audioFondo.addEventListener('ended', () => {
+        sonando = false;
+        actualizarIconoMusica();
+      });
+    }
+
+    function toggleMusica(){
+      if (!audioFondo) {
+        console.warn('No existe el elemento de audio para la canción de fondo.');
+        return;
+      }
+
+      if (!sonando) {
+        try {
+          audioFondo.play();
+          sonando = true;
+        } catch (error) {
+          console.warn('La reproducción de la música tuvo un problema:', error);
+          sonando = false;
+        }
+      } else {
+        audioFondo.pause();
+        sonando = false;
+      }
+
+      actualizarIconoMusica();
+    }
+
+    actualizarIconoMusica();
+
+    // --- Contador de tiempo juntos ---
+    // En JavaScript, enero = 0 y diciembre = 11. Por eso marzo es 2.
+    const inicio = new Date(2026, 2, 22, 0, 0, 0); // 22-3-2026
+
+    function actualizarNumero(elementoId, valor, largo) {
+      const elemento = document.getElementById(elementoId);
+      if (!elemento) return;
+
+      const valorFormateado = String(valor).padStart(largo, '0');
+      const valorActual = elemento.dataset.valor || elemento.textContent;
+
+      if (Number(valorActual) !== valor) {
+        elemento.dataset.valor = String(valor);
+        elemento.textContent = valorFormateado;
+        elemento.classList.remove('animando');
+        void elemento.offsetWidth;
+        elemento.classList.add('animando');
+      }
+    }
+
+    function actualizarContador(){
+      const ahora = new Date();
+      let dif = ahora - inicio;
+      if(dif < 0) dif = 0;
+      const dias = Math.floor(dif / (1000*60*60*24));
+      const horas = Math.floor((dif / (1000*60*60)) % 24);
+      const mins = Math.floor((dif / (1000*60)) % 60);
+      const segs = Math.floor((dif / 1000) % 60);
+
+      actualizarNumero('dias', dias, 3);
+      actualizarNumero('horas', horas, 2);
+      actualizarNumero('mins', mins, 2);
+      actualizarNumero('segs', segs, 2);
+    }
+    actualizarContador();
+    setInterval(actualizarContador, 1000);
+  </script>
+
+</body>
+</html>
